@@ -1,0 +1,169 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  name      String?
+  email     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  quotations         Quotation[]
+  popQuotations      POPQuotation[]
+  materials          Material[]
+  predefinedPricing  PredefinedPricing[]
+}
+
+model Material {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  unit        String   // sqft, piece, etc.
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PredefinedPricing {
+  id          String   @id @default(cuid())
+  type        String   // kitchen, wardrobe, loft, tv_unit, bed, pooja_room, crockery_unit, pantry, magic_corner
+  pricePerSqft Float
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Quotation {
+  id              String            @id @default(cuid())
+  quotationNumber String            @unique
+  clientName      String
+  clientPhone     String?
+  clientEmail     String?
+  clientAddress   String?
+  status          String            @default("DRAFT") // DRAFT, FINALIZED
+  totalAmount     Float             @default(0)
+  notes           String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  finalizedAt     DateTime?
+  userId          String
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  items           QuotationItem[]
+  progress        QuotationProgress[]
+  extensions      ExtensionQuotation[]
+}
+
+model QuotationItem {
+  id              String    @id @default(cuid())
+  quotationId     String
+  quotation       Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  
+  roomType        String    // kitchen, living_room, bedroom, etc.
+  customRoomType  String?   // if user enters custom room type
+  length          Float
+  width           Float
+  area            Float     // calculated: length * width
+  pricePerSqft    Float
+  totalPrice      Float     // calculated: area * pricePerSqft
+  priceSource     String    // PREDEFINED or CUSTOM
+  description     String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model QuotationProgress {
+  id            String    @id @default(cuid())
+  quotationId   String
+  quotation     Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  
+  status        String    // NOT_STARTED, IN_PROGRESS, COMPLETED
+  percentage    Int       @default(0)
+  notes         String?
+  updatedBy     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model ExtensionQuotation {
+  id                    String    @id @default(cuid())
+  originalQuotationId   String
+  originalQuotation     Quotation @relation(fields: [originalQuotationId], references: [id], onDelete: Cascade)
+  
+  extensionNumber       String    @unique
+  description           String
+  additionalAmount      Float
+  status                String    @default("DRAFT") // DRAFT, FINALIZED
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  finalizedAt           DateTime?
+  
+  items                 ExtensionItem[]
+}
+
+model ExtensionItem {
+  id                String             @id @default(cuid())
+  extensionId       String
+  extension         ExtensionQuotation @relation(fields: [extensionId], references: [id], onDelete: Cascade)
+  
+  roomType          String
+  customRoomType    String?
+  length            Float
+  width             Float
+  area              Float
+  pricePerSqft      Float
+  totalPrice        Float
+  priceSource       String
+  description       String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model POPQuotation {
+  id              String        @id @default(cuid())
+  quotationNumber String        @unique
+  clientName      String
+  clientPhone     String?
+  clientEmail     String?
+  clientAddress   String?
+  status          String        @default("DRAFT") // DRAFT, FINALIZED
+  totalAmount     Float         @default(0)
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  finalizedAt     DateTime?
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  items           POPItem[]
+}
+
+model POPItem {
+  id              String        @id @default(cuid())
+  popQuotationId  String
+  popQuotation    POPQuotation  @relation(fields: [popQuotationId], references: [id], onDelete: Cascade)
+  
+  description     String
+  length          Float?
+  width           Float?
+  area            Float?
+  pricePerSqft    Float?
+  quantity        Int?
+  unitPrice       Float?
+  totalPrice      Float
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}

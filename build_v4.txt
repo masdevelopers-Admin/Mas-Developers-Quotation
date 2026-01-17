@@ -1,0 +1,49 @@
+
+> mas-quotation-system@0.1.0 build
+> next build
+
+▲ Next.js 16.1.2 (Turbopack)
+- Environments: .env.local, .env
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 18.9s
+  Running TypeScript ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/18) ...
+  Generating static pages using 3 workers (4/18) 
+  Generating static pages using 3 workers (8/18) 
+  Generating static pages using 3 workers (13/18) 
+✓ Generating static pages using 3 workers (18/18) in 851.0ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/auth/[...nextauth]
+├ ƒ /api/materials
+├ ƒ /api/materials/[id]
+├ ƒ /api/pop
+├ ƒ /api/pop/[id]
+├ ƒ /api/pricing
+├ ƒ /api/pricing/[id]
+├ ƒ /api/quotations
+├ ƒ /api/quotations/[id]
+├ ƒ /dashboard
+├ ƒ /dashboard/materials
+├ ƒ /dashboard/pop/drafts
+├ ƒ /dashboard/pop/finalized
+├ ƒ /dashboard/pop/new
+├ ƒ /dashboard/pricing
+├ ƒ /dashboard/quotations/[id]/edit
+├ ƒ /dashboard/quotations/drafts
+├ ƒ /dashboard/quotations/finalized
+├ ƒ /dashboard/quotations/new
+└ ○ /login
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
