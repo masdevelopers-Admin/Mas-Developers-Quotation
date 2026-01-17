@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "npm run db:prod && next build",
-    "db:prod": "cp prisma/schema.postgres.prisma prisma/schema.prisma && prisma generate",
+    "db:prod": "cp prisma/schema.postgres.prisma prisma/schema.prisma && prisma generate && prisma db push",
     "db:dev": "git checkout prisma/schema.prisma && prisma generate",
     "start": "next start",
     "lint": "eslint"
