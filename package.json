@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run db:prod && next build",
+    "db:prod": "cp prisma/schema.postgres.prisma prisma/schema.prisma && prisma generate",
+    "db:dev": "git checkout prisma/schema.prisma && prisma generate",
     "start": "next start",
     "lint": "eslint"
   },
